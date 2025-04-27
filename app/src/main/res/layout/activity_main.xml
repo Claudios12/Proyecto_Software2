@@ -1,0 +1,58 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:padding="16dp">
+
+    <!-- Jugador 1 -->
+    <TextView
+        android:id="@+id/vidaJugador1TextView"
+        android:text="Vida Jugador 1: 8"
+        android:textSize="24sp"
+        android:layout_marginBottom="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/atacarJugador1Button"
+        android:text="Atacar Jugador 2"
+        android:layout_marginBottom="32dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+    <TextView
+        android:id="@+id/resultadoTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Aqui van los resultado"
+        android:textSize="20sp" />
+
+    <!-- Jugador 2 -->
+
+    <Button
+        android:id="@+id/atacarJugador2Button"
+        android:text="Atacar Jugador 1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+
+    <TextView
+        android:id="@+id/vidaJugador2TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Vida Jugador 2: 8"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/reiniciarButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reiniciar" />
+
+</LinearLayout>
