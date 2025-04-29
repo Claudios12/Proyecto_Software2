@@ -1,5 +1,6 @@
 package com.example.conversor;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,7 +19,7 @@ import java.util.List;
 public class HistoryActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private Button btnClearHistory;
+    private Button btnClearHistory, backButton;
     private HistoryAdapter historyAdapter;
 
     @Override
@@ -28,6 +29,7 @@ public class HistoryActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerViewHistory);
         btnClearHistory = findViewById(R.id.btnClearHistory);
+        backButton= findViewById(R.id.backButton);
 
         // Configura el adaptador con los datos del historial
         List<String> history = HistoryManager.getHistory();
@@ -35,6 +37,11 @@ public class HistoryActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(historyAdapter);
+
+        backButton.setOnClickListener(v -> {
+            Intent intent = new Intent(HistoryActivity.this, MainActivity.class);
+            startActivity(intent);
+        });
 
         btnClearHistory.setOnClickListener(v -> {
             HistoryManager.clearHistory();
