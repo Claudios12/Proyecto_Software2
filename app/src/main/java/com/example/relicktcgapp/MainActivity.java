@@ -4,10 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.graphics.Color;
 import android.os.Handler;
+
+import com.bumptech.glide.Glide;
 
 import java.util.Random;
 
@@ -20,17 +23,15 @@ public class MainActivity extends AppCompatActivity {
     int jugador = 1;
 
     TextView vidaJugador1TextView, vidaJugador2TextView, resultadoTextView;
+
+    ImageView reiniciarButton, roll;
     Button atacarJugador1Button, atacarJugador2Button;
-
-    Button reiniciarButton;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        jugador = getIntent().getIntExtra("jugadorInicial", 1); // recibimos quien inicia
 
         actualizarTurno();
 
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         atacarJugador1Button = findViewById(R.id.atacarJugador1Button);
         atacarJugador2Button = findViewById(R.id.atacarJugador2Button);
         reiniciarButton = findViewById(R.id.reiniciarButton);
+        roll = findViewById(R.id.dado_6);
 
         reiniciarButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,14 +84,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void animarDaño(TextView textView) {
+        textView.animate()
+                .translationX(10f)
+                .setDuration(50)
+                .withEndAction(() -> textView.animate()
+                        .translationX(-10f)
+                        .setDuration(50)
+                        .withEndAction(() -> textView.animate()
+                                .translationX(0f)
+                                .setDuration(50)
+                        )
+                )
+                .start();
+    }
+
     private void atacar(int jugador) {
+
+
 
         if (vidaJugador1 <= 0 || vidaJugador2 <= 0) {
             switch (jugador) {
                 case 1:
                     if (vidaJugador2 <= 0) {
-                    animarDaño(vidaJugador2TextView);
-                    cambiarColorTemporal(vidaJugador2TextView);
+                        animarDaño(vidaJugador2TextView);
+                        cambiarColorTemporal(vidaJugador2TextView);
                     }
                     break;
                 case 2:
@@ -107,74 +126,83 @@ public class MainActivity extends AppCompatActivity {
         int dañoCritico=5;
         int dañoFinal = 0;
 
+        new Handler().postDelayed(() -> {
+            Glide.with(this)
+                    .load(R.drawable.dice) // Carga la imagen del dado
+                    .into(roll);
+        }, 1000);
+
         switch (dado) {
             case 1:
+                roll.setImageResource(R.drawable.Dice_1);
+                dañoFinal = 0;
+                break;
             case 2:
+                roll.setImageResource(R.drawable.Dice_2);
+                dañoFinal = 0;
+                break;
             case 3:
+                roll.setImageResource(R.drawable.Dice_3);
                 dañoFinal = 0;
                 break;
             case 4:
+                roll.setImageResource(R.drawable.Dice_4);
                 dañoFinal = Math.round(dañoBase * 0.5f);
                 break;
             case 5:
+                roll.setImageResource(R.drawable.Dice_5);
                 dañoFinal = dañoBase;
                 break;
             case 6:
+                roll.setImageResource(R.drawable.Dice_6);
                 dañoFinal = dañoCritico;
                 break;
+
         }
 
         if (jugador == 1) {
             if (dañoFinal == 0) {
-                resultadoTextView.setText("Jugador 1 falló el ataque (sacó un " + dado + ")");
                 animarDaño(vidaJugador2TextView);
             } else {
                 vidaJugador2 -= dañoFinal;
                 vidaJugador2TextView.setText("Vida Jugador 2: " + vidaJugador2);
-                resultadoTextView.setText("Jugador 1 sacó un " + dado + ". Daño hecho: " + dañoFinal);
                 animarDaño(vidaJugador2TextView);
                 cambiarColorTemporal(vidaJugador2TextView);
             }
         }
         if (jugador == 2) {
             if (dañoFinal == 0) {
-                resultadoTextView.setText("Jugador 2 falló el ataque (sacó un " + dado + ")");
                 animarDaño(vidaJugador1TextView);
             } else {
                 vidaJugador1 -= dañoFinal;
                 vidaJugador1TextView.setText("Vida Jugador 1: " + vidaJugador1);
-                resultadoTextView.setText("Jugador 2 sacó un " + dado + ". Daño hecho: " + dañoFinal);
                 animarDaño(vidaJugador1TextView);
                 cambiarColorTemporal(vidaJugador1TextView);
             }
         }
+
+        boolean vidaCeroJugador1 = false;
+        boolean vidaCeroJugador2 = false;
+
         if (vidaJugador1 <= 0) {
-            resultadoTextView.setText("Jugador 2 Gana!");
+            vidaJugador1=0;
+            vidaJugador1TextView.setText("Vida 0");
+            vidaCeroJugador1 = true;
+        }
+        if (vidaJugador2 <= 0) {
+            vidaJugador2=0;
+            vidaJugador2TextView.setText("Vida 0");
+            vidaCeroJugador2 = true;
+        }
+
+
+        if (vidaJugador1 < 0 && vidaCeroJugador1==true) {
+            vidaJugador2TextView.setText("Jugador 2 Gana!");
             vidaJugador1TextView.setText("GAME OVER");
-        } else if (vidaJugador2 <= 0) {
-            resultadoTextView.setText("Jugador 1 Gana!");
+        } else if (vidaJugador2 < 0 && vidaCeroJugador2==true) {
+            vidaJugador1TextView.setText("Jugador 1 Gana!");
             vidaJugador2TextView.setText("GAME OVER");
         }
-        if (jugador == 1) {
-            this.jugador = 2;
-        } else {
-            this.jugador = 1;
-        }
-    }
-
-    private void animarDaño(TextView textView) {
-        textView.animate()
-                .translationX(10f)
-                .setDuration(50)
-                .withEndAction(() -> textView.animate()
-                        .translationX(-10f)
-                        .setDuration(50)
-                        .withEndAction(() -> textView.animate()
-                                .translationX(0f)
-                                .setDuration(50)
-                        )
-                )
-                .start();
     }
 
     private void cambiarColorTemporal(TextView textView) {

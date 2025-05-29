@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 public class InicioActivity extends Activity {
 
@@ -13,16 +14,17 @@ public class InicioActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inicio);
 
-        Button botonIniciar = findViewById(R.id.botonIniciar);
+        ImageView botonIniciar = findViewById(R.id.imageView5);
 
         botonIniciar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(InicioActivity.this, DecidirActivity.class);
+                Intent intent = new Intent(InicioActivity.this, TutorialActivity.class);
                 startActivity(intent);
                 finish(); // Opcional: cerrar esta pantalla para no volver atrás
             }
         });
+
     }
 }
